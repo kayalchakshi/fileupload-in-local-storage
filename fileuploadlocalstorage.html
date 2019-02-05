@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        input,div{
+            margin-left: 100px;
+            margin-bottom: 30px;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" class="classhere" />
+    <button onClick="download();">download</button>
+    <div id="localfile"></div>
+</body>
+<script>
+    $(document).ready(function(){
+    $("body").on("change",".classhere",function() {
+            var file = $(this)[0].files[0];
+            var reader = new FileReader();
+            reader.onload = function(e){
+                localStorage.theImage = reader.result;
+                alert("file stored to the local storage");
+                var nr = JSON.stringify(localStorage.theImage);
+
+                if(nr.includes("data:image/"))
+                {
+                    var imgs = new Image();
+                    imgs.src = window.localStorage.getItem("theImage");
+                    $("#localfile").html(imgs);
+                }
+                else{
+                    var str = localStorage.theImage.split(",").pop();
+                    var e = window.atob(str);
+                    $("#localfile").html(e);
+                }
+            }
+            reader.readAsDataURL(file);
+        });
+        });
+        function download(){
+        var filename = "data";
+        var downloadlink = document.createElement("a");
+        downloadlink.download = filename;
+        downloadlink.href = localStorage.theImage;
+        downloadlink.click();
+    }
+    </script>
+    </html>
